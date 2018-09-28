@@ -1,0 +1,2 @@
+# Scraper
+A news scraper
