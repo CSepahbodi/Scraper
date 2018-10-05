@@ -1,4 +1,4 @@
-console.log('inside server.js');
+console.log('MY GOD YOU ACTUALLY MADE IT! Only few have traveled so far in the galaxy and only a few will return with the knowledge that you are about to gain....');
 
 //Welcome to the massive dependancy section of my code....
 
@@ -11,6 +11,8 @@ var Note = require('./models/Note.js');
 var Article = require('./models/Article.js');
 var request = require('request');
 var cheerio = require('cheerio');
+
+//Aaaaaand now to initialize mongoose and gaurd the Mongo URI for my database...
 
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 mongoose.Promise = Promise;
@@ -26,6 +28,8 @@ app.use(logger("dev"));
 app.use(bodyParser.urlencoded({
 	extended: false
 }));
+
+//handlebars....
 
 app.use(express.static("public"));
 
@@ -44,6 +48,8 @@ db.once("open", function(){
 	console.log("Mongoose connection successful.");
 });
 
+//render the homepage and show the data...
+
 app.get("/", function(req,res){
 	Article.find({"saved": false}).limit(20).exec(function(error,data){
 		var hbsObject = {
@@ -54,6 +60,8 @@ app.get("/", function(req,res){
 	});
 });
 
+//to show the articles that were scraped from the new york times...
+
 app.get("/saved", function(req,res){
 	Article.find({"saved": true}).populate("notes").exec(function(error, articles){
 		var hbsObject = {
@@ -63,10 +71,14 @@ app.get("/saved", function(req,res){
 	});
 });
 
+//Scrape function to get articles from the new york times...
+
 app.get("/scrape", function(req,res){
-	request("https://www.nytimes.com/", function(error,response, html){
+	request("https://www.nytimes.com/", function(err, res, html){
 		var $ = cheerio.load(html);
+		console.log(response);
 		$("article").each(function(i,element){
+			console.log(response);
 			var result = {};
 			result.title = $(this).children("h2").text();
 			result.summary = $(this).children(".summary").text();
@@ -87,6 +99,8 @@ app.get("/scrape", function(req,res){
 	});
 });
 
+//get all of the articles and show them onscreen...
+
 app.get("/articles", function(req,res){
 	Article.find({}).limit(20).exec(function(error, doc){
 		if(error){
@@ -97,6 +111,9 @@ app.get("/articles", function(req,res){
 		}
 	});
 });
+
+
+//get a specific article...
 
 app.get("/articles/:id", function(req,res){
 	Article.findOne({ "_id": req.params.id})
@@ -111,6 +128,8 @@ app.get("/articles/:id", function(req,res){
 	});
 });
 
+//when you want to save an article to the saved articles section...
+
 app.post("/articles/save/:id", function(req,res){
 	Article.findOneAndUpdate({ "_id": req.params.id}, {"saved": true})
 	.exec(function(err, doc){
@@ -122,6 +141,8 @@ app.post("/articles/save/:id", function(req,res){
 		}
 	});
 });
+
+//When you want to delete an article from the saved articles section...
 
 app.post("/articles/delete/:id", function(req,res){
 	Article.findOneAndUpdate({ "_id": req.params.id}, {"saved": false, "notes":[]})
@@ -135,6 +156,8 @@ app.post("/articles/delete/:id", function(req,res){
 	});
 });
 
+
+//when you want to post a comment to one of the articles...
 app.post("notes/save/:id", function(req,res){
 	var newNote = new Note({
 		body: req.body.text,
@@ -160,6 +183,9 @@ app.post("notes/save/:id", function(req,res){
 	});
 });
 
+
+//delete the note when you click delete....
+
 app.delete("/notes/delete/:note_id/:article", function(req,res){
 	Note.findOneAndRemove({"_id": req.params.note.id}, function(err){
 		if(err){
@@ -181,6 +207,8 @@ app.delete("/notes/delete/:note_id/:article", function(req,res){
 	});
 });
 
+
+//Init Port and display it in the console...
 app.listen(PORT, function(){
 	console.log("App running on PORT: " + PORT);
 });
