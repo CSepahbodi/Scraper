@@ -74,33 +74,45 @@ app.get("/saved", function(req,res){
 
 //Scrape function to get articles from the new york times...
 
-app.get("/scrape", function(req,res){
-	request("https://www.nytimes.com/", function(err, res, html){
-		var $ = cheerio.load(html);
-		console.log(response);
-		$("article").each(function(i,element){
-			console.log(response);
-			var result = {};
-			result.title = $(this).children("h2").text();
-			result.summary = $(this).children(".summary").text();
-			result.link = $(this).children("h2").children("a").attr("href");
-
-			var entry = new Article(result);
-
-			entry.save(function(err, doc){
-				if(err){
-					console.log(err);
-				}
-				else{
-					console.log(doc);
-				}
+app.get("/scrape", function(req, res) {
+	//request("https://www.nytimes.com/", function(err, res, html){
+	// First, we grab the body of the html with axios
+	axios.get("https://hiphopdx.com/news#").then(function (response) {
+	// Then, we load that into cheerio and save it to $ for a shorthand selector
+	var $ = cheerio.load(response.data);
+	//console.log(response.data);
+	// Now, we grab every h2 within an article tag, and do the following:
+	$(".card ").each(function (i, element) {
+		//console.log($(this))
+		// Save an empty result object
+		var result = {};
+		// Add the text and href of every link, and save them as properties of the result object
+		result.title = $(this)
+		.children("h3")
+		.text();
+		result.summary = $(this)
+		.children("p")
+		.text();
+		result.link = "https://newyorktimes.com" + $(this)
+		.attr("href");
+	//console.log(result);
+	// Create a new Article using the `result` object built from scraping	
+		db.Article.create(result)
+		.then(function (dbArticle) {
+			// View the added result in the console
+			console.log(dbArticle);
+						})
+						.catch(function (err) {
+							// If an error occurred, send it to the client
+							return res.json(err);
+						});
+				});
+				// If we were able to successfully scrape and save an Article, send a message to the client
+				res.send("Scrape Complete");
 			});
 		});
-		res.send("Scrape Complete");
-	});
-});
 
-//get all of the articles and show them onscreen...
+//get all of the articles and show them onscreen once scraped...
 
 app.get("/articles", function(req,res){
 	Article.find({}).limit(20).exec(function(error, doc){
