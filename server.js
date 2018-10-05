@@ -11,6 +11,7 @@ var Note = require('./models/Note.js');
 var Article = require('./models/Article.js');
 var request = require('request');
 var cheerio = require('cheerio');
+var axios = require('axios');
 
 //Aaaaaand now to initialize mongoose and gaurd the Mongo URI for my database...
 
