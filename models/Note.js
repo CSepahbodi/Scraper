@@ -1,16 +1,14 @@
-console.log('inside note.js');
+//Require mongoose......... again....
+var mongoose = require("mongoose");
 
-var mongoose = require('mongoose');
+// Save reference to the Schema
 var Schema = mongoose.Schema;
 
+// Using the Schema constructor, create a new NoteSchema object
+// This is similar to a Sequelize model
 var NoteSchema = new Schema({
-	body: {
-		type: String,
-	},
-	article: {
-		type: Schema.Types.ObjectId,
-		ref: "Article"
-	}
+  name: String,
+  body: String
 });
 
 var Note = mongoose.model("Note", NoteSchema);
