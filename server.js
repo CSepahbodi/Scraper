@@ -1,17 +1,20 @@
+//Just a bit of silliness...
 console.log('MY GOD YOU ACTUALLY MADE IT! Only few have traveled so far in the galaxy and only a few will return with the knowledge that you are about to gain....');
+console.log('');
+console.log('FYI man, alright. You could sit at home, and do like absolutely nothing, and your name goes through like 17 computers a day. 1984? Yeah right, man.');
+console.log("That's a typo. Orwell is here now. He's livin' large. We have no names, man. No names. We are nameless");
+console.log('');
+console.log("This is our world now. The world of the electron and the switch; the beauty of the baud. We exist without nationality, skin color, or religious bias."); 
+console.log("You wage wars, murder, cheat, lie to us and try to make us believe it's for our own good, yet we're the criminals. Yes, I am a criminal. My crime is that of curiosity. I am a hacker, and this is my manifesto.");
+console.log('');
+console.log("I hope you don't screw like you type...");
+//Welcome to the dependancy section of my code....
 
-//Welcome to the massive dependancy section of my code....
-
-var express = require('express');
-var bodyParser = require('body-parser');
-//var logger = require('morgan');
-var mongoose = require('mongoose');
-var path = require('path');
-var Note = require('./models/Note.js');
-var Article = require('./models/Article.js');
-//var request = require('request');
-var cheerio = require('cheerio');
-var axios = require('axios');
+var express = require("express");
+var mongoose = require("mongoose");
+var axios = require("axios");
+var cheerio = require("cheerio");
+var db = require("./models");
 
 //Aaaaaand now to initialize mongoose and gaurd the Mongo URI for my database...
 
@@ -20,7 +23,6 @@ mongoose.Promise = Promise;
 mongoose.connect(MONGODB_URI);
 
 var db = mongoose.connection;
-
 var PORT = process.env.MONGODB_PORT || 3000;
 
 var app = express();
