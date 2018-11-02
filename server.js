@@ -31,7 +31,14 @@ mongoose.connect(MONGODB_URI);
 var db = mongoose.connection;
 var PORT = process.env.MONGODB_PORT || 3000;
 
+//init express....
 var app = express();
+
+app.use(express.urlencoded({
+    extended: true
+	}));
+app.use(express.json());
+app.use(express.static("public"));
 
 app.get("/", function (req, res) {
     res.render("index.html");
